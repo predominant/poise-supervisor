@@ -1,21 +1,28 @@
+<% chef_versions = %w(12 13) %>
+<% platforms     = { :ubuntu => %w(16.04 14.04), :centos => %w(7.2 6.8) } %>
+---
 driver:
   name: vagrant
-  require_chef_omnibus: true
-
-chef_versions:
-- 11
-- 12
+  customize:
+    nictype1: virtio
 
 platforms:
-- name: ubuntu-12.04
+<% platforms.each do |platform, platform_versions| %>
+<%   platform_versions.each do |platform_version| %>
+<%     chef_versions.each do |chef_version| %>
+- name: <%= platform %>-<%= platform_version %>-chef-<%= chef_version %>
+  driver:
+    box: bento/<%= platform %>-<%= platform_version %>
+  driver_config:
+    require_chef_omnibus: <%= chef_version %>
   run_list:
-  - recipe[apt]
-- name: ubuntu-10.04
-  run_list:
-    - recipe[apt]
-- name: centos-6.4
+    <% if platform == :ubuntu %>- recipe[apt]<% end %>
+    <% if platform == :centos %>- recipe[apt]<% end %>
+<%     end %>
+<%   end %>
+<% end %>
 
 suites:
 - name: default
   run_list:
-  - recipe[supervisor]
+  - recipe[poise-supervisor]

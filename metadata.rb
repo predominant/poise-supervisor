@@ -1,4 +1,4 @@
-name              "supervisor"
+name              "poise-supervisor"
 maintainer        "Noah Kantrowitz"
 maintainer_email  "noah@coderanger.net"
 license           "Apache 2.0"
